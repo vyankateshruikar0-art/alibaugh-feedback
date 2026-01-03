@@ -91,63 +91,63 @@ button {
 const questions = [
   {
     key: "overall_experience",
-    text: "How was your overall trip experience?",
-    options: ["🌟 Excellent", "🙂 Good", "😐 Average", "😞 Poor"]
+    text: "1. How would you rate your overall experience with the trip arranged by Let’s Firuya?",
+    options: ["🔥 Mast", "🙂 Good", "😐 Okay", "😵 Never again"]
   },
   {
     key: "planning",
-    text: "How satisfied were you with trip planning & coordination?",
-    options: ["🌟 Very satisfied", "🙂 Satisfied", "😐 Neutral", "😞 Dissatisfied"]
+    text: "2. How satisfied were you with the trip planning and coordination?",
+    options: ["Very satisfied", "Satisfied", "Neutral", "Dissatisfied"]
   },
   {
     key: "pre_info",
-    text: "How clear was the information shared before the trip?",
-    options: ["✅ Very clear", "🙂 Clear", "😐 Somewhat", "❌ Confusing"]
+    text: "3. How clear and helpful was the information provided before the trip?",
+    options: ["Very clear", "Clear", "Somewhat unclear", "Not clear"]
   },
   {
     key: "transport",
-    text: "How was the transportation arrangement?",
-    options: ["🚌 Comfortable", "🙂 Fine", "😐 Okay", "😬 Tiring"]
+    text: "4. How satisfied were you with the transportation arrangements?",
+    options: ["Very satisfied", "Satisfied", "Neutral", "Dissatisfied"]
   },
   {
     key: "stay",
-    text: "How was the camping / tent stay experience?",
-    options: ["🔥 Amazing", "🙂 Good", "😐 Okay", "😅 Not comfortable"]
+    text: "5. How would you rate the accommodation provided during the trip?",
+    options: ["Excellent", "Good", "Average", "Poor"]
   },
   {
     key: "promise",
-    text: "Did the arrangements match what was promised?",
-    options: ["✅ Yes, completely", "🙂 Mostly", "😐 Somewhat", "❌ No"]
+    text: "6. Did the arrangements match what was promised at the time of booking?",
+    options: ["Yes, exactly", "Mostly", "Somewhat", "No"]
   },
   {
     key: "itinerary",
-    text: "How well was the itinerary managed?",
-    options: ["⏱ Perfect", "🙂 Good", "😐 Okay", "😞 Poor"]
+    text: "7. How well was the itinerary planned and executed?",
+    options: ["Very well", "Well", "Average", "Poorly"]
   },
   {
     key: "activities",
-    text: "How enjoyable were sightseeing & beach activities?",
-    options: ["🌊 Loved it", "🙂 Enjoyed", "😐 Average", "😞 Boring"]
+    text: "8. Were the activities and sightseeing options enjoyable and well-organized?",
+    options: ["Yes, very", "Yes", "Somewhat", "No"]
   },
   {
     key: "pace",
-    text: "Was the pace of the trip comfortable?",
-    options: ["👌 Perfect", "🙂 Fine", "😐 Little rushed", "😫 Too tiring"]
+    text: "9. Was the pace of the trip comfortable?",
+    options: ["Yes, comfortable", "Somewhat", "Too fast", "Too slow"]
   },
   {
     key: "safety",
-    text: "Did you feel safe & supported during the trip?",
-    options: ["🛡 Very safe", "🙂 Safe", "😐 Okay", "❌ Unsafe"]
+    text: "10. Did you feel safe and well-supported throughout the trip?",
+    options: ["Yes", "Mostly", "Somewhat", "No"]
   },
   {
     key: "value",
-    text: "How was the value for money?",
-    options: ["💰 Worth it", "🙂 Fair", "😐 Average", "❌ Not worth"]
+    text: "11. How would you rate the value for money of the trip?",
+    options: ["Excellent", "Good", "Average", "Poor"]
   },
   {
     key: "recommend",
-    text: "Would you recommend Let’s Firuya to others?",
-    options: ["✅ Definitely", "🙂 Maybe", "🤔 Not sure", "❌ No"]
+    text: "12. Would you recommend Let’s Firuya to others?",
+    options: ["Definitely", "Maybe", "Not sure", "No"]
   }
 ];
 
@@ -182,7 +182,7 @@ function renderQuestion() {
 
 // NEXT BUTTON
 nextBtn.onclick = () => {
-  if (!answers[questions[current].key]) return;
+  if (!answers[questions[current].key]) return alert("Please select an option to continue");
 
   current++;
   if (current < questions.length) {
@@ -195,29 +195,35 @@ nextBtn.onclick = () => {
 // FINAL 3 TEXT QUESTIONS
 function showTextQuestions() {
   card.innerHTML = `
-    <h3>What did you like most about this trip?</h3>
+    <h3>13. What did you like most about the trip?</h3>
     <textarea id="like" rows="3" placeholder="Your favorite moments..."></textarea>
 
-    <h3>What can we improve in future trips?</h3>
+    <h3>14. What areas do you think can be improved?</h3>
     <textarea id="improve" rows="3" placeholder="Your suggestions..."></textarea>
 
-    <h3>Any additional comments?</h3>
-    <textarea id="comments" rows="3" placeholder="Anything else you'd like to add..."></textarea>
+    <h3>15. Any additional comments or suggestions for Let’s Firuya?</h3>
+    <textarea id="comments" rows="3" placeholder="Your comments..."></textarea>
   `;
+
   nextBtn.innerText = "Submit 🚀";
+
   nextBtn.onclick = submitData;
 }
 
 // GOOGLE SHEETS API
 const API_URL = "https://script.google.com/macros/s/AKfycbwco6Hcgyz6r0JdWBv8PZcDtoC1JdUkbAjZqnoKTDiyz4FAZIU0nWNVFpYqIRRFMr7nTA/exec";
 
+// SUBMIT FUNCTION
 function submitData() {
-  answers.like = document.getElementById("like").value;
-  answers.improve = document.getElementById("improve").value;
-  answers.comments = document.getElementById("comments").value;
+  nextBtn.disabled = true;  // Prevent double submission
+
+  answers.like = document.getElementById("like").value.trim();
+  answers.improve = document.getElementById("improve").value.trim();
+  answers.comments = document.getElementById("comments").value.trim();
 
   fetch(API_URL, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(answers)
   })
   .then(() => {
@@ -226,6 +232,7 @@ function submitData() {
   })
   .catch(() => {
     alert("❌ Something went wrong. Please try again.");
+    nextBtn.disabled = false;
   });
 }
 </script>
