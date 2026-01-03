@@ -72,31 +72,82 @@ button {
 <body>
 
 <div class="app">
-  <h1>🏖 Alibaug Trip Feedback</h1>
-  <p class="subtitle">Quick, fun & honest 😄</p>
+<h1>🏖 Alibaug Trip Feedback</h1>
+<p class="subtitle">Quick, fun & honest 😄</p>
 
-  <div id="card"></div>
+<p style="font-size: 13px; color: #444; margin-top: 10px;">
+  ही feedback पूर्णपणे anonymous आहे. तुमचे नाव कुठेही save होणार नाही — कृपया प्रामाणिक उत्तर द्या 😊<br>
+  ही माहिती आम्ही future trips सुधारण्यासाठी वापरणार आहोत.
+</p>
 
-  <button id="nextBtn">Next →</button>
+<div id="card"></div>
+
+<button id="nextBtn">Next →</button>
 </div>
 
+
 <script>
-// QUESTIONS ARRAY
+// FINAL 12 MCQ QUESTIONS
 const questions = [
   {
-    key: "overall",
-    text: "How was the overall trip?",
-    options: ["🔥 Mast", "🙂 Good", "😐 Okay", "😵 Never again"]
+    key: "overall_experience",
+    text: "How was your overall trip experience?",
+    options: ["🌟 Excellent", "🙂 Good", "😐 Average", "😞 Poor"]
   },
   {
-    key: "travel",
-    text: "Travel experience in the traveller?",
-    options: ["🚌 Comfortable", "👍 Fine", "😬 Tiring"]
+    key: "planning",
+    text: "How satisfied were you with trip planning & coordination?",
+    options: ["🌟 Very satisfied", "🙂 Satisfied", "😐 Neutral", "😞 Dissatisfied"]
   },
   {
-    key: "camping",
-    text: "Night camping experience?",
-    options: ["🔥 Highlight", "🙂 Nice", "😅 Not my thing"]
+    key: "pre_info",
+    text: "How clear was the information shared before the trip?",
+    options: ["✅ Very clear", "🙂 Clear", "😐 Somewhat", "❌ Confusing"]
+  },
+  {
+    key: "transport",
+    text: "How was the transportation arrangement?",
+    options: ["🚌 Comfortable", "🙂 Fine", "😐 Okay", "😬 Tiring"]
+  },
+  {
+    key: "stay",
+    text: "How was the camping / tent stay experience?",
+    options: ["🔥 Amazing", "🙂 Good", "😐 Okay", "😅 Not comfortable"]
+  },
+  {
+    key: "promise",
+    text: "Did the arrangements match what was promised?",
+    options: ["✅ Yes, completely", "🙂 Mostly", "😐 Somewhat", "❌ No"]
+  },
+  {
+    key: "itinerary",
+    text: "How well was the itinerary managed?",
+    options: ["⏱ Perfect", "🙂 Good", "😐 Okay", "😞 Poor"]
+  },
+  {
+    key: "activities",
+    text: "How enjoyable were sightseeing & beach activities?",
+    options: ["🌊 Loved it", "🙂 Enjoyed", "😐 Average", "😞 Boring"]
+  },
+  {
+    key: "pace",
+    text: "Was the pace of the trip comfortable?",
+    options: ["👌 Perfect", "🙂 Fine", "😐 Little rushed", "😫 Too tiring"]
+  },
+  {
+    key: "safety",
+    text: "Did you feel safe & supported during the trip?",
+    options: ["🛡 Very safe", "🙂 Safe", "😐 Okay", "❌ Unsafe"]
+  },
+  {
+    key: "value",
+    text: "How was the value for money?",
+    options: ["💰 Worth it", "🙂 Fair", "😐 Average", "❌ Not worth"]
+  },
+  {
+    key: "recommend",
+    text: "Would you recommend Let’s Firuya to others?",
+    options: ["✅ Definitely", "🙂 Maybe", "🤔 Not sure", "❌ No"]
   }
 ];
 
@@ -110,7 +161,6 @@ const nextBtn = document.getElementById("nextBtn");
 // INITIAL RENDER
 renderQuestion();
 
-// FUNCTION TO RENDER QUESTION
 function renderQuestion() {
   const q = questions[current];
   card.innerHTML = `<h3>${q.text}</h3>`;
@@ -121,10 +171,7 @@ function renderQuestion() {
     div.innerText = opt;
 
     div.onclick = () => {
-      document
-        .querySelectorAll(".option")
-        .forEach(o => o.classList.remove("selected"));
-
+      document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
       div.classList.add("selected");
       answers[q.key] = opt;
     };
@@ -133,7 +180,7 @@ function renderQuestion() {
   });
 }
 
-// NEXT BUTTON CLICK
+// NEXT BUTTON
 nextBtn.onclick = () => {
   if (!answers[questions[current].key]) return;
 
@@ -145,26 +192,29 @@ nextBtn.onclick = () => {
   }
 };
 
-// SHOW TEXT QUESTIONS
+// FINAL 3 TEXT QUESTIONS
 function showTextQuestions() {
   card.innerHTML = `
-    <h3>What did you enjoy the most?</h3>
-    <textarea id="favorite" rows="3" placeholder="Your favorite moments..."></textarea>
+    <h3>What did you like most about this trip?</h3>
+    <textarea id="like" rows="3" placeholder="Your favorite moments..."></textarea>
 
-    <h3>What can we improve?</h3>
+    <h3>What can we improve in future trips?</h3>
     <textarea id="improve" rows="3" placeholder="Your suggestions..."></textarea>
+
+    <h3>Any additional comments?</h3>
+    <textarea id="comments" rows="3" placeholder="Anything else you'd like to add..."></textarea>
   `;
   nextBtn.innerText = "Submit 🚀";
   nextBtn.onclick = submitData;
 }
 
-// GOOGLE SHEETS WEB APP URL
-const API_URL = "https://script.google.com/macros/s/AKfycbwco6Hcgyz6r0JdWBv8PZcDtoC1JdUkbAjZqnoKTDiyz4FAZIU0nWNVFpYqIRRFMr7nTA/exec"; // <-- Replace with your URL
+// GOOGLE SHEETS API
+const API_URL = "https://script.google.com/macros/s/AKfycbwco6Hcgyz6r0JdWBv8PZcDtoC1JdUkbAjZqnoKTDiyz4FAZIU0nWNVFpYqIRRFMr7nTA/exec";
 
-// SUBMIT DATA TO GOOGLE SHEETS
 function submitData() {
-  answers.favorite = document.getElementById("favorite").value;
+  answers.like = document.getElementById("like").value;
   answers.improve = document.getElementById("improve").value;
+  answers.comments = document.getElementById("comments").value;
 
   fetch(API_URL, {
     method: "POST",
